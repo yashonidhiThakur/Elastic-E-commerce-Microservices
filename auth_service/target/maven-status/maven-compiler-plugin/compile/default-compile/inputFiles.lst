@@ -1,0 +1,12 @@
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/AuthApplication.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/controller/AuthController.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/controller/HealthController.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/dto/ErrorResponse.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/dto/LoginRequest.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/dto/LoginResponse.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/dto/LogoutRequest.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/dto/UserInfoResponse.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/model/Session.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/model/User.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/repository/SessionRepository.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/auth_service/src/main/java/com/ecommerce/auth/repository/UserRepository.java

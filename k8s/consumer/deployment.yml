@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-consumer
+  template:
+    metadata:
+      labels:
+        app: inventory-consumer
+    spec:
+      initContainers:
+        - name: init-inventory-data
+          image: nirshah77/inventory-consumer:latest
+          command: ['sh', '-c', 'cp -r /app/inventory_service/* /data/']
+          volumeMounts:
+            - name: inventory-db-storage
+              mountPath: /data
+      containers:
+        - name: inventory-consumer
+          image: nirshah77/inventory-consumer:latest
+          command: ["python", "-m", "inventory_service.consumer"]
+          envFrom:
+            - configMapRef:
+                name: microservices-config
+          volumeMounts:
+            - name: inventory-db-storage
+              mountPath: /app/inventory_service
+          resources:
+            requests:
+              memory: 64Mi
+            limits:
+              memory: 128Mi
+      volumes:
+        - name: inventory-db-storage
+          persistentVolumeClaim:
+            claimName: inventory-db-pvc

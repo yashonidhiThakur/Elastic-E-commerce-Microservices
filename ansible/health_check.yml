@@ -1,0 +1,40 @@
+---
+- name: Post-deployment Health Checks and Log Collection
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    project_root: "{{ playbook_dir }}/.."
+    logs_dir: "{{ project_root }}/logs"
+
+  tasks:
+    - name: Health | Check API Gateway health
+      uri:
+        url: "http://localhost:8000/"
+        return_content: yes
+        status_code: 200
+      register: gateway_health
+      ignore_errors: yes
+
+    - name: Create logs directory
+      file:
+        path: "{{ logs_dir }}"
+        state: directory
+        mode: '0755'
+      when: gateway_health.failed
+
+    - name: Logs | Collect logs if health check fails
+      shell: "docker-compose logs > {{ logs_dir }}/error_logs_{{ ansible_date_time.iso8601 | default('now') }}.txt"
+      args:
+        chdir: "{{ project_root }}"
+      when: gateway_health.failed
+
+    - name: Logs | Notify user of failure
+      fail:
+        msg: "API Gateway is not responding. Logs have been dumped to the logs/ directory."
+      when: gateway_health.failed
+
+    - name: Health | Status
+      debug:
+        msg: "All services appear to be healthy!"

@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api_gateway/Dockerfile
+    ports:
+      - "5001:8000"
+    environment:
+      - INVENTORY_URL=http://inventory-service:8002
+      - AUTH_URL=http://auth-service:8003
+      - CART_URL=http://cart-service:8004
+      - PAYMENT_URL=http://payment-service:8005
+    depends_on:
+      - inventory-service
+      - auth-service
+      - cart-service
+      - payment-service
+
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: inventory_service/Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    volumes:
+      - ./inventory_service:/app/inventory_service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  inventory-consumer:
+    build:
+      context: .
+      dockerfile: inventory_service/Dockerfile
+    command: ["python", "-m", "inventory_service.consumer"]
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    volumes:
+      - ./inventory_service:/app/inventory_service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth_service/Dockerfile
+    ports:
+      - "8003:8003"
+    environment:
+      - DB_PATH=/app/db/app.db
+    volumes:
+      - ./db:/app/db
+
+  cart-service:
+    build:
+      context: .
+      dockerfile: cart_service/Dockerfile
+    ports:
+      - "8004:8004"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - INVENTORY_URL=http://inventory-service:8002
+    depends_on:
+      - redis
+      - inventory-service
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: payment_service/Dockerfile
+    ports:
+      - "8005:8005"
+    environment:
+      - AUTH_DB_PATH=/app/db/app.db
+      - INVENTORY_DB_PATH=/app/inventory_service/inventory.db
+      - RABBITMQ_HOST=rabbitmq
+      - CART_URL=http://cart-service:8004
+    volumes:
+      - ./db:/app/db
+      - ./inventory_service:/app/inventory_service
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      cart-service:
+        condition: service_started
+      inventory-service:
+        condition: service_started

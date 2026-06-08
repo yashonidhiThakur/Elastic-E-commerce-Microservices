@@ -1,0 +1,23 @@
+---
+- name: Apply ConfigMap
+  command: kubectl apply -f {{ playbook_dir }}/../k8s/configmap.yml
+
+- name: Apply RabbitMQ and Redis
+  command: kubectl apply -f {{ playbook_dir }}/../k8s/{{ item }}/
+  loop:
+    - rabbitmq
+    - redis
+
+- name: Apply Microservices and HPA
+  command: kubectl apply -f {{ playbook_dir }}/../k8s/{{ item }}/
+  loop:
+    - auth
+    - inventory
+    - cart
+    - payment
+    - gateway
+    - consumer
+  notify: wait for gateway rollout
+
+- name: Inject Vault Secret into Kubernetes (Using Ansible Vault)
+  shell: kubectl create secret generic db-credentials --from-literal=admin-password={{ db_admin_password }} --dry-run=client -o yaml | kubectl apply -f -

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: microservices-config
+data:
+  INVENTORY_URL: "http://inventory-service:8002"
+  AUTH_URL: "http://auth-service:8003"
+  CART_URL: "http://cart-service:8004"
+  PAYMENT_URL: "http://payment-service:8005"
+  RABBITMQ_URL: "amqp://guest:guest@rabbitmq-service:5672/"
+  RABBITMQ_HOST: "rabbitmq-service"
+  REDIS_URL: "redis://redis-service:6379"

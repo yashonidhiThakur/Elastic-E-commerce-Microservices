@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-service
+  template:
+    metadata:
+      labels:
+        app: inventory-service
+    spec:
+      initContainers:
+        - name: init-inventory-data
+          image: nirshah77/inventory-service:latest
+          command: ['sh', '-c', 'cp -r /app/inventory_service/* /data/']
+          volumeMounts:
+            - name: inventory-db-storage
+              mountPath: /data
+      containers:
+        - name: inventory-service
+          image: nirshah77/inventory-service:latest
+          ports:
+            - containerPort: 8002
+          envFrom:
+            - configMapRef:
+                name: microservices-config
+          volumeMounts:
+            - name: inventory-db-storage
+              mountPath: /app/inventory_service
+          resources:
+            requests:
+              memory: 128Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: inventory-db-storage
+          persistentVolumeClaim:
+            claimName: inventory-db-pvc

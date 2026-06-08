@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microservices Shop</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        h1,
+        h2 {
+            color: #333;
+        }
+
+        input,
+        select,
+        button {
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            margin-top: 5px;
+        }
+
+        .banner {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .banner.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .banner.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .available {
+            color: green;
+            font-weight: bold;
+        }
+
+        .unavailable {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="banner" class="banner"></div>
+
+        <!-- Login Screen -->
+        <div id="login-screen">
+            <h1>Microservices Shop</h1>
+            <h2>Login</h2>
+            <div>
+                <input type="text" id="username" placeholder="Username"><br>
+                <input type="password" id="password" placeholder="Password"><br>
+                <button onclick="login()">Login</button>
+                <div id="login-error" class="error hidden">Invalid username or password</div>
+            </div>
+        </div>
+
+        <!-- Shop Screen -->
+        <div id="shop-screen" class="hidden">
+            <div class="header">
+                <h1>Microservices Shop</h1>
+                <div class="header-right">
+                    <span id="welcome-msg"></span>
+                    <span id="wallet-balance"></span>
+                    <button onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Inventory</h2>
+                <button onclick="loadInventory()">Refresh Inventory</button>
+                <table id="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Available Stock</th>
+                            <th>Price (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="section"
+                style="background-color: #acdcac; padding: 15px; border-radius: 5px; border: 2px solid #28a745;">
+                <h2>Add to Cart</h2>
+                <select id="item-select"></select>
+                <input type="number" id="quantity" value="1" min="1" style="width: 60px;">
+                <button onclick="addToCart()">Add</button>
+            </div>
+
+            <div class="section">
+                <h2>My Cart</h2>
+                <button onclick="loadCart()">Refresh Cart</button>
+                <table id="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price (₹)</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <h3 style="text-align: right;">Total: ₹<span id="cart-total">0.00</span></h3>
+                <button onclick="checkout()"
+                    style="width: 100%; padding: 12px; font-size: 16px; background-color: #28a745;">Pay Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let token = localStorage.getItem('token');
+        let username = localStorage.getItem('username');
+
+        function showBanner(message, isSuccess) {
+            const banner = document.getElementById('banner');
+            banner.textContent = message;
+            banner.className = `banner ${isSuccess ? 'success' : 'error'}`;
+            banner.style.display = 'block';
+            setTimeout(() => { banner.style.display = 'none'; }, 4000);
+        }
+
+        async function checkAuth() {
+            if (!token) {
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('shop-screen').classList.add('hidden');
+                return;
+            }
+
+            try {
+                const res = await fetch('/auth/me', { headers: { 'token': token } });
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('welcome-msg').textContent = `Welcome, ${data.username}`;
+                    document.getElementById('wallet-balance').textContent = `Wallet: ₹${data.wallet_balance}`;
+
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('shop-screen').classList.remove('hidden');
+
+                    loadInventory();
+                    loadCart();
+                } else {
+                    logout();
+                }
+            } catch (e) {
+                logout();
+            }
+        }
+
+        async function login() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errDiv = document.getElementById('login-error');
+            errDiv.classList.add('hidden');
+
+            try {
+                const res = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    token = data.token;
+                    username = data.username;
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('username', username);
+                    checkAuth();
+                } else {
+                    errDiv.classList.remove('hidden');
+                }
+            } catch (e) {
+                errDiv.classList.remove('hidden');
+            }
+        }
+
+        async function logout() {
+            if (token) {
+                await fetch('/auth/logout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                });
+            }
+            token = null;
+            username = null;
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            checkAuth();
+        }
+
+        async function updateWallet() {
+            try {
+                const res = await fetch('/payment/balance', { headers: { 'token': token } });
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('wallet-balance').textContent = `Wallet: ₹${data.balance}`;
+                }
+            } catch (e) { }
+        }
+
+        async function loadInventory() {
+            try {
+                const res = await fetch('/inventory/stock', { headers: { 'token': token } });
+                if (res.ok) {
+                    const data = await res.json();
+                    const tbody = document.querySelector('#inventory-table tbody');
+                    const select = document.getElementById('item-select');
+
+                    tbody.innerHTML = '';
+                    select.innerHTML = '';
+
+                    for (const [item, details] of Object.entries(data)) {
+                        // Add to table
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                        <td>${item}</td>
+                        <td>${details.available}</td>
+                        <td>${details.price}</td>
+                    `;
+                        tbody.appendChild(tr);
+
+                        // Add to select if available
+                        if (details.available > 0) {
+                            const opt = document.createElement('option');
+                            opt.value = item;
+                            opt.textContent = `${item} (₹${details.price})`;
+                            select.appendChild(opt);
+                        }
+                    }
+                }
+            } catch (e) {
+                showBanner("Failed to load inventory", false);
+            }
+        }
+
+        async function loadCart() {
+            try {
+                const res = await fetch('/cart', { headers: { 'token': token } });
+                if (res.ok) {
+                    const data = await res.json();
+                    const tbody = document.querySelector('#cart-table tbody');
+                    tbody.innerHTML = '';
+
+                    document.getElementById('cart-total').textContent = data.total.toFixed(2);
+
+                    data.items.forEach(item => {
+                        const tr = document.createElement('tr');
+                        const statusClass = item.available ? 'available' : 'unavailable';
+                        const statusText = item.available ? '✅ Available' : '❌ Out of Stock';
+
+                        tr.innerHTML = `
+                        <td>${item.item}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.price}</td>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td><button onclick="removeFromCart('${item.item}')" style="background-color: #dc3545; padding: 4px 8px;">Remove</button></td>
+                    `;
+                        tbody.appendChild(tr);
+                    });
+
+                    // Store current cart items for checkout
+                    window.currentCartItems = data.items.map(i => ({ item: i.item, quantity: i.quantity }));
+                }
+            } catch (e) {
+                showBanner("Failed to load cart", false);
+            }
+        }
+
+        async function addToCart() {
+            const item = document.getElementById('item-select').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            if (!item || quantity < 1) return;
+
+            try {
+                const res = await fetch('/cart/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'token': token },
+                    body: JSON.stringify({ item, quantity })
+                });
+                if (res.ok) {
+                    loadCart();
+                } else {
+                    showBanner("Failed to add to cart", false);
+                }
+            } catch (e) {
+                showBanner("Failed to add to cart", false);
+            }
+        }
+
+        async function removeFromCart(item) {
+            try {
+                const res = await fetch('/cart/remove', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'token': token },
+                    body: JSON.stringify({ item })
+                });
+                if (res.ok) {
+                    loadCart();
+                }
+            } catch (e) { }
+        }
+
+        async function checkout() {
+            if (!window.currentCartItems || window.currentCartItems.length === 0) {
+                showBanner("Your cart is empty", false);
+                return;
+            }
+
+            try {
+                const res = await fetch('/payment/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'token': token },
+                    body: JSON.stringify({ cart_items: window.currentCartItems })
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    const total = document.getElementById('cart-total').textContent;
+                    showBanner(`Payment successful! ₹${total} deducted. New wallet balance: ₹${data.new_balance}`, true);
+
+                    document.getElementById('wallet-balance').textContent = `Wallet: ₹${data.new_balance}`;
+                    loadCart();
+                    loadInventory();
+                } else {
+                    const errorMsg = data.error || data.detail || "Unknown error";
+
+                    if (errorMsg.includes("out of stock")) {
+                        const parts = errorMsg.split(" ");
+                        const itemName = parts.length > 1 ? parts[1] : "An item";
+                        showBanner(`${itemName} is no longer available. Please update your cart.`, false);
+                        loadCart();
+                    } else if (errorMsg.includes("Insufficient wallet balance")) {
+                        const walletStr = document.getElementById('wallet-balance').textContent.replace('Wallet: ₹', '');
+                        const totalCost = document.getElementById('cart-total').textContent;
+                        showBanner(`Insufficient balance. Your wallet has ₹${walletStr}, order costs ₹${totalCost}.`, false);
+                    } else {
+                        showBanner("Something went wrong. Please try again.", false);
+                    }
+                }
+            } catch (e) {
+                showBanner("Something went wrong. Please try again.", false);
+            }
+        }
+
+        // Initialize
+        checkAuth();
+
+    </script>
+</body>
+
+</html>

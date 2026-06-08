@@ -1,0 +1,77 @@
+---
+- name: Pre-flight checks and Setup for Microservices
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  vars:
+    project_root: "{{ playbook_dir }}/.."
+
+  tasks:
+    - name: Pre-flight | Check if Docker is installed
+      command: docker --version
+      register: docker_check
+      changed_when: false
+
+    - name: Pre-flight | Check if Docker Compose is installed
+      command: docker-compose --version
+      register: docker_compose_check
+      changed_when: false
+      failed_when: false
+
+    - name: Pre-flight | Check if docker compose (plugin) is installed
+      command: docker compose version
+      register: docker_compose_plugin_check
+      changed_when: false
+      failed_when: docker_compose_check.rc != 0 and docker_compose_plugin_check.rc != 0
+
+    - name: Pre-flight | Check if Python is installed
+      command: python3 --version
+      register: python_check
+      changed_when: false
+
+    - name: Pre-flight | Ensure required ports are free
+      wait_for:
+        port: "{{ item }}"
+        state: stopped
+        timeout: 3
+      with_items:
+        - 8000
+        - 5672
+        - 6379
+      ignore_errors: yes
+      register: port_checks
+
+    - name: Pre-flight | Warn if ports are in use
+      debug:
+        msg: "WARNING: Port {{ item.item }} is already in use. Ensure no other application is using it."
+      when: item.failed is defined and item.failed
+      with_items: "{{ port_checks.results }}"
+
+    - name: Setup | Generate .env file from template
+      template:
+        src: templates/env.j2
+        dest: "{{ project_root }}/.env"
+
+    - name: Setup | Create db directory
+      file:
+        path: "{{ project_root }}/db"
+        state: directory
+        mode: '0755'
+
+    - name: Setup | Run database initialization if db does not exist
+      stat:
+        path: "{{ project_root }}/db/app.db"
+      register: db_file
+
+    - name: Setup | Execute init_db.py
+      command: python3 init_db.py
+      args:
+        chdir: "{{ project_root }}"
+      when: not db_file.stat.exists
+      register: db_init
+
+    - name: Setup | Display db initialization status
+      debug:
+        msg: "Database initialized successfully."
+      when: db_init.changed

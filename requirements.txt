@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pika
+python-dotenv
+requests
+httpx
+redis
+# just to upload all the images on doockerhub

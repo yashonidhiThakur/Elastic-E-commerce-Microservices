@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      containers:
+        - name: payment-service
+          image: nirshah77/payment-service:latest
+          ports:
+            - containerPort: 8005
+          envFrom:
+            - configMapRef:
+                name: microservices-config
+          volumeMounts:
+            - name: auth-db-storage
+              mountPath: /app/db
+            - name: inventory-db-storage
+              mountPath: /app/inventory_service
+          resources:
+            requests:
+              memory: 128Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: auth-db-storage
+          persistentVolumeClaim:
+            claimName: auth-db-pvc
+        - name: inventory-db-storage
+          persistentVolumeClaim:
+            claimName: inventory-db-pvc

@@ -1,0 +1,7 @@
+---
+- name: Deploy Microservices to Kubernetes
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  roles:
+    - k8s_deploy
