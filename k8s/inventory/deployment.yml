@@ -12,13 +12,6 @@ spec:
       labels:
         app: inventory-service
     spec:
-      initContainers:
-        - name: init-inventory-data
-          image: nirshah77/inventory-service:latest
-          command: ['sh', '-c', 'cp -r /app/inventory_service/* /data/']
-          volumeMounts:
-            - name: inventory-db-storage
-              mountPath: /data
       containers:
         - name: inventory-service
           image: nirshah77/inventory-service:latest
@@ -32,9 +25,9 @@ spec:
               mountPath: /app/inventory_service
           resources:
             requests:
-              memory: 128Mi
-            limits:
               memory: 256Mi
+            limits:
+              memory: 512Mi
       volumes:
         - name: inventory-db-storage
           persistentVolumeClaim:

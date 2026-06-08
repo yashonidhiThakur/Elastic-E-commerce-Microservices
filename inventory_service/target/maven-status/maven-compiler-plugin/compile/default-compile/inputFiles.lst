@@ -1,0 +1,9 @@
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/InventoryApplication.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/controller/HealthController.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/controller/InventoryController.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/dto/InventoryStockResponse.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/dto/OrderPaidEvent.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/messaging/InventoryPublisher.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/messaging/OrderConsumer.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/model/Inventory.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/repository/InventoryRepository.java

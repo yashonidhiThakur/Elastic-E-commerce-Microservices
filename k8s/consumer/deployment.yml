@@ -12,17 +12,12 @@ spec:
       labels:
         app: inventory-consumer
     spec:
-      initContainers:
-        - name: init-inventory-data
-          image: nirshah77/inventory-consumer:latest
-          command: ['sh', '-c', 'cp -r /app/inventory_service/* /data/']
-          volumeMounts:
-            - name: inventory-db-storage
-              mountPath: /data
       containers:
         - name: inventory-consumer
-          image: nirshah77/inventory-consumer:latest
-          command: ["python", "-m", "inventory_service.consumer"]
+          image: nirshah77/inventory-service:latest
+          env:
+            - name: SPRING_MAIN_WEB_APPLICATION_TYPE
+              value: "none"
           envFrom:
             - configMapRef:
                 name: microservices-config
@@ -31,9 +26,9 @@ spec:
               mountPath: /app/inventory_service
           resources:
             requests:
-              memory: 64Mi
+              memory: 256Mi
             limits:
-              memory: 128Mi
+              memory: 512Mi
       volumes:
         - name: inventory-db-storage
           persistentVolumeClaim:
