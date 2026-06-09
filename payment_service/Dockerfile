@@ -1,10 +1,19 @@
-FROM python:3.10-slim
+FROM eclipse-temurin:21-jdk-alpine AS builder
 
 WORKDIR /app
+COPY pom.xml .
+COPY mvnw .
+COPY .mvn .mvn
+RUN ./mvnw dependency:go-offline
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY src src
+RUN ./mvnw clean package -DskipTests
 
-COPY payment_service/ /app/payment_service/
+FROM eclipse-temurin:21-jre-alpine
 
-CMD ["uvicorn", "payment_service.main:app", "--host", "0.0.0.0", "--port", "8005"]
+WORKDIR /app
+COPY --from=builder /app/target/payment-service-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8005
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
