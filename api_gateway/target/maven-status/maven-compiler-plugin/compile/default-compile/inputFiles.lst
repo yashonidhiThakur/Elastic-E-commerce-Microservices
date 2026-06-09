@@ -1,0 +1,3 @@
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/api_gateway/src/main/java/com/ecommerce/gateway/GatewayApplication.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/api_gateway/src/main/java/com/ecommerce/gateway/controller/GatewayController.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/api_gateway/src/main/java/com/ecommerce/gateway/filter/AuthTokenFilter.java
