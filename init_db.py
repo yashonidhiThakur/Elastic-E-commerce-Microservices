@@ -31,6 +31,8 @@ def init_db():
         (2, 'yashonidhi', 'password456', 20000.0),
         (3, 'random', 'password789', 10000.0)
     ]
+    for i in range(1, 201):
+        users.append((3 + i, f'user_{i}', f'pass_{i}', 20000.0))
     
     cursor.executemany('INSERT OR IGNORE INTO users VALUES (?, ?, ?, ?)', users)
     

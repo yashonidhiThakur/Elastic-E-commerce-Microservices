@@ -22,6 +22,8 @@ spec:
                 name: microservices-config
           resources:
             requests:
-              memory: 256Mi
-            limits:
+              cpu: 250m
               memory: 512Mi
+            limits:
+              cpu: 800m
+              memory: 1024Mi

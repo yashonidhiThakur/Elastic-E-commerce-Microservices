@@ -27,9 +27,11 @@ spec:
               mountPath: /app/inventory_service
           resources:
             requests:
-              memory: 128Mi
+              cpu: 250m
+              memory: 512Mi
             limits:
-              memory: 256Mi
+              cpu: 800m
+              memory: 1024Mi
       volumes:
         - name: auth-db-storage
           persistentVolumeClaim:
