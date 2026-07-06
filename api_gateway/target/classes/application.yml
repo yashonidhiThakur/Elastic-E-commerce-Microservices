@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: api-gateway
+  threads:
+    virtual:
+      enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+server:
+  port: 8000
+
+app:
+  services:
+    order: ${ORDER_SERVICE_URL:http://localhost:8001}
+    inventory: ${INVENTORY_URL:http://localhost:8002}
+    auth: ${AUTH_URL:http://localhost:8003}
+    cart: ${CART_URL:http://localhost:8004}
+    payment: ${PAYMENT_URL:http://localhost:8005}
+
+logging:
+  level:
+    com.ecommerce.gateway: DEBUG
+
+admission:
+  products:
+    "1":
+      bucket-capacity: 100
+      refill-per-second: 50
+    "2":
+      bucket-capacity: 50
+      refill-per-second: 25
+  default:
+    bucket-capacity: 200
+    refill-per-second: 100
