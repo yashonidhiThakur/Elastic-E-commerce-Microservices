@@ -38,13 +38,13 @@ services:
       - AUTH_URL=http://auth-service:8003
       - CART_URL=http://cart-service:8004
       - PAYMENT_URL=http://payment-service:8005
+      - ORDER_SERVICE_URL=http://order-service:8001
     depends_on:
       - inventory-service
       - auth-service
       - cart-service
       - payment-service
-
-
+      - order-service
   inventory-service:
     build:
       context: .
@@ -53,6 +53,7 @@ services:
       - "8002:8002"
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SAGA_ENABLED=true
     volumes:
       - ./inventory_service:/app/inventory_service
     depends_on:
@@ -80,9 +81,13 @@ services:
     environment:
       - REDIS_URL=redis://redis:6379
       - INVENTORY_URL=http://inventory-service:8002
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - SAGA_ENABLED=true
     depends_on:
       - redis
       - inventory-service
+      kafka:
+        condition: service_healthy
 
   payment-service:
     build:
@@ -95,6 +100,7 @@ services:
       - INVENTORY_DB_PATH=/app/inventory_service/inventory.db
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - CART_URL=http://cart-service:8004
+      - SAGA_ENABLED=true
     volumes:
       - ./db:/app/db
       - ./inventory_service:/app/inventory_service
@@ -106,4 +112,30 @@ services:
       cart-service:
         condition: service_started
       inventory-service:
+        condition: service_started
+
+  order-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: order_db
+    ports:
+      - "5432:5432"
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order_service/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - DB_URL=jdbc:postgresql://order-db:5432/order_db
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    depends_on:
+      kafka:
+        condition: service_healthy
+      order-db:
         condition: service_started

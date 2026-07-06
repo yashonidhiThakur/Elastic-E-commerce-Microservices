@@ -6,10 +6,16 @@
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/controller/InventoryController.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/dto/InventoryStockResponse.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/dto/OrderPaidEvent.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/dto/SagaEvents.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/messaging/InventoryPublisher.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/messaging/OrderConsumer.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/messaging/SagaConsumers.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/model/Inventory.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/model/PendingReservation.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/model/ProcessedEvent.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/repository/InventoryRepository.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/repository/PendingReservationRepository.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/repository/ProcessedEventRepository.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/sharded/CellSelector.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/sharded/LuaScripts.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/sharded/ReservationSweeper.java

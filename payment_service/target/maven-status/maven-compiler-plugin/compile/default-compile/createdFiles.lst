@@ -1,7 +1,15 @@
+com/ecommerce/payment/events/SagaEvents$BaseEvent.class
+com/ecommerce/payment/events/SagaEvents$PaymentProcessedPayload.class
+com/ecommerce/payment/events/SagaEvents$InventoryReservedPayload.class
+com/ecommerce/payment/config/DataSourceConfig.class
+com/ecommerce/payment/events/SagaEvents.class
+com/ecommerce/payment/dto/CartItem.class
+com/ecommerce/payment/consumers/InventoryReservedConsumer.class
 com/ecommerce/payment/dto/CheckoutRequest.class
 com/ecommerce/payment/dto/OrderPaidEvent.class
 com/ecommerce/payment/controller/PaymentController.class
-com/ecommerce/payment/config/DataSourceConfig.class
+com/ecommerce/payment/events/SagaEvents$PaymentFailedPayload.class
 com/ecommerce/payment/service/PaymentService.class
-com/ecommerce/payment/dto/CartItem.class
+com/ecommerce/payment/events/SagaEvents$InventoryReservedPayload$ReservedItem.class
 com/ecommerce/payment/PaymentApplication.class
+com/ecommerce/payment/consumers/InventoryReservedConsumer$1.class

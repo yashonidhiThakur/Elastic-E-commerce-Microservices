@@ -8,4 +8,6 @@
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/cart_service/src/main/java/com/ecommerce/cart/dto/ErrorResponse.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/cart_service/src/main/java/com/ecommerce/cart/dto/InventoryStockResponse.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/cart_service/src/main/java/com/ecommerce/cart/dto/RemoveItemRequest.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/cart_service/src/main/java/com/ecommerce/cart/messaging/PaymentProcessedConsumer.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/cart_service/src/main/java/com/ecommerce/cart/messaging/SagaEvents.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/cart_service/src/main/java/com/ecommerce/cart/service/CartService.java

@@ -2,6 +2,7 @@ package com.ecommerce.payment.controller;
 
 import com.ecommerce.payment.dto.CheckoutRequest;
 import com.ecommerce.payment.service.PaymentService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +35,16 @@ public class PaymentController {
         }
     }
 
+    @Value("${saga.enabled:false}")
+    private boolean sagaEnabled;
+
     @PostMapping("/payment/checkout")
     public ResponseEntity<?> checkout(@RequestBody CheckoutRequest req,
                                       @RequestHeader(value = "x-user-id", required = false) String xUserId) {
+        if (sagaEnabled) {
+            return ResponseEntity.status(HttpStatus.GONE).body(Map.of("detail", "Checkout moved to /orders"));
+        }
+        
         if (xUserId == null || xUserId.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("detail", "Missing user_id"));
         }

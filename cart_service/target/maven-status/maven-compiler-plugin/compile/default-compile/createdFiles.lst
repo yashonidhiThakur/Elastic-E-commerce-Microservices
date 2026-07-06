@@ -2,12 +2,17 @@ com/ecommerce/cart/dto/CartResponse.class
 com/ecommerce/cart/dto/AddItemRequest.class
 com/ecommerce/cart/service/CartService$1.class
 com/ecommerce/cart/dto/ErrorResponse.class
+com/ecommerce/cart/messaging/SagaEvents$PaymentProcessedPayload.class
 com/ecommerce/cart/service/CartService$2.class
 com/ecommerce/cart/dto/InventoryStockResponse.class
 com/ecommerce/cart/service/CartService.class
 com/ecommerce/cart/config/CartConfig.class
+com/ecommerce/cart/messaging/PaymentProcessedConsumer$1.class
 com/ecommerce/cart/dto/CartItemResponse.class
 com/ecommerce/cart/dto/RemoveItemRequest.class
 com/ecommerce/cart/controller/HealthController.class
+com/ecommerce/cart/messaging/SagaEvents.class
+com/ecommerce/cart/messaging/PaymentProcessedConsumer.class
 com/ecommerce/cart/controller/CartController.class
 com/ecommerce/cart/CartApplication.class
+com/ecommerce/cart/messaging/SagaEvents$BaseEvent.class

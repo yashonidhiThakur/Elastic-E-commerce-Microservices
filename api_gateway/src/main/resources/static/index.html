@@ -349,7 +349,7 @@
                     });
 
                     // Store current cart items for checkout
-                    window.currentCartItems = data.items.map(i => ({ item: i.item, quantity: i.quantity }));
+                    window.currentCartItems = data.items.map(i => ({ productId: i.item, quantity: i.quantity, priceAtAdd: i.price }));
                 }
             } catch (e) {
                 showBanner("Failed to load cart", false);
@@ -397,39 +397,54 @@
             }
 
             try {
-                const res = await fetch('/payment/checkout', {
+                const totalAmount = parseFloat(document.getElementById('cart-total').textContent);
+                const res = await fetch('/checkout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'token': token },
-                    body: JSON.stringify({ cart_items: window.currentCartItems })
+                    body: JSON.stringify({ 
+                        items: window.currentCartItems, 
+                        totalAmount: totalAmount 
+                    })
                 });
 
-                const data = await res.json();
-
-                if (res.ok && data.success) {
-                    const total = document.getElementById('cart-total').textContent;
-                    showBanner(`Payment successful! ₹${total} deducted. New wallet balance: ₹${data.new_balance}`, true);
-
-                    document.getElementById('wallet-balance').textContent = `Wallet: ₹${data.new_balance}`;
-                    loadCart();
-                    loadInventory();
+                if (res.status === 202) {
+                    const data = await res.json();
+                    const orderId = data.order_id;
+                    showBanner(`Order ${orderId} accepted. Processing...`, true);
+                    pollOrderStatus(orderId);
                 } else {
-                    const errorMsg = data.error || data.detail || "Unknown error";
-
-                    if (errorMsg.includes("out of stock")) {
-                        const parts = errorMsg.split(" ");
-                        const itemName = parts.length > 1 ? parts[1] : "An item";
-                        showBanner(`${itemName} is no longer available. Please update your cart.`, false);
-                        loadCart();
-                    } else if (errorMsg.includes("Insufficient wallet balance")) {
-                        const walletStr = document.getElementById('wallet-balance').textContent.replace('Wallet: ₹', '');
-                        const totalCost = document.getElementById('cart-total').textContent;
-                        showBanner(`Insufficient balance. Your wallet has ₹${walletStr}, order costs ₹${totalCost}.`, false);
-                    } else {
-                        showBanner("Something went wrong. Please try again.", false);
-                    }
+                    const data = await res.json();
+                    showBanner(data.error || "Checkout failed", false);
                 }
             } catch (e) {
                 showBanner("Something went wrong. Please try again.", false);
+            }
+        }
+
+        async function pollOrderStatus(orderId) {
+            try {
+                const res = await fetch(`/orders/${orderId}`, {
+                    headers: { 'token': token }
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.status === 'CONFIRMED') {
+                        showBanner(`Order ${orderId} confirmed successfully!`, true);
+                        loadCart();
+                        loadInventory();
+                        checkBalance();
+                    } else if (data.status === 'CANCELLED') {
+                        showBanner(`Order ${orderId} was cancelled.`, false);
+                        loadCart();
+                        loadInventory();
+                    } else {
+                        // Still processing, poll again in 1 second
+                        setTimeout(() => pollOrderStatus(orderId), 1000);
+                    }
+                }
+            } catch (e) {
+                console.error("Polling failed", e);
             }
         }
 
