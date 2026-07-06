@@ -14,22 +14,12 @@ public class DataSourceConfig {
     @Value("${db.auth.url}")
     private String authDbUrl;
 
-    @Value("${db.inventory.url}")
-    private String inventoryDbUrl;
-
     @Bean(name = "authDataSource")
     public DataSource authDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(authDbUrl);
         dataSource.setDriverClassName("org.sqlite.JDBC");
-        return dataSource;
-    }
-
-    @Bean(name = "inventoryDataSource")
-    public DataSource inventoryDataSource() {
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl(inventoryDbUrl);
-        dataSource.setDriverClassName("org.sqlite.JDBC");
+        dataSource.setMaximumPoolSize(10);
         return dataSource;
     }
 }
