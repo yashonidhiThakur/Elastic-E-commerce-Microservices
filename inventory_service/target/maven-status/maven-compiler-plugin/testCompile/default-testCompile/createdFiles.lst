@@ -1,2 +1,4 @@
+com/ecommerce/inventory/sharded/ShardedCounterServiceIT.class
 com/ecommerce/inventory/InventoryApplicationTests.class
+com/ecommerce/inventory/sharded/CellSelectorTest.class
 com/ecommerce/inventory/controller/InventoryControllerTest.class

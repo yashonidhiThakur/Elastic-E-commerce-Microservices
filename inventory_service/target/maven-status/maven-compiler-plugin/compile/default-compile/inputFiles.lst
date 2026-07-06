@@ -1,4 +1,7 @@
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/InventoryApplication.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/config/InventoryDataSeeder.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/config/RedisConfig.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/controller/AdminInventoryController.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/controller/HealthController.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/controller/InventoryController.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/dto/InventoryStockResponse.java
@@ -7,3 +10,8 @@
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/messaging/OrderConsumer.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/model/Inventory.java
 /Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/repository/InventoryRepository.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/sharded/CellSelector.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/sharded/LuaScripts.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/sharded/ReservationSweeper.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/sharded/ShardedCounterProperties.java
+/Users/yashonidhithakur/Documents/spe_project/microservices-ecommerce-platform/inventory_service/src/main/java/com/ecommerce/inventory/sharded/ShardedCounterService.java
