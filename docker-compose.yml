@@ -39,12 +39,14 @@ services:
       - CART_URL=http://cart-service:8004
       - PAYMENT_URL=http://payment-service:8005
       - ORDER_SERVICE_URL=http://order-service:8001
+      - REDIS_HOST=redis
     depends_on:
       - inventory-service
       - auth-service
       - cart-service
       - payment-service
       - order-service
+      - redis
   inventory-service:
     build:
       context: ./inventory_service
@@ -61,6 +63,8 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+      redis:
+        condition: service_started
 
 
   auth-service:
@@ -101,13 +105,11 @@ services:
       - "8005:8005"
     environment:
       - AUTH_DB_PATH=/app/db/app.db
-      - INVENTORY_DB_PATH=/app/inventory_service/inventory.db
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - CART_URL=http://cart-service:8004
       - SAGA_ENABLED=true
     volumes:
       - ./db:/app/db
-      - ./inventory_service:/app/inventory_service
     depends_on:
       kafka:
         condition: service_healthy

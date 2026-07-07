@@ -64,16 +64,6 @@ public class GatewayController {
         return forwardRequest(request, orderUrl, "/orders");
     }
 
-    // Keep the old routes for backward compatibility with order-service (until it's retired)
-    @RequestMapping(value = "/api/orders")
-    public ResponseEntity<byte[]> handleApiOrders(HttpServletRequest request) {
-        return forwardRequest(request, orderUrl, "/orders");
-    }
-
-    @RequestMapping(value = "/api/inventory")
-    public ResponseEntity<byte[]> handleApiInventory(HttpServletRequest request) {
-        return forwardRequest(request, inventoryUrl, "/inventory");
-    }
 
     @RequestMapping("/health")
     public ResponseEntity<Map<String, String>> health() {
@@ -85,12 +75,8 @@ public class GatewayController {
             String requestUri = request.getRequestURI();
             String path = requestUri;
             
-            // For exact mappings like /api/orders mapping to /orders, originalPrefix contains the target path.
-            if (requestUri.equals("/api/orders")) {
-                path = "/orders";
-            } else if (requestUri.equals("/api/inventory")) {
-                path = "/inventory";
-            } else if (requestUri.equals("/checkout")) {
+            // For exact mappings like /checkout mapping to /orders
+            if (requestUri.equals("/checkout")) {
                 path = "/orders";
             }
 

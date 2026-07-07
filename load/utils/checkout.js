@@ -20,7 +20,11 @@ export function performCheckoutFlow(userId, productId, quantity, withThinkTime =
 
   // 2. Checkout
   const idempotencyKey = generateIdempotencyKey();
-  const checkoutRes = post('/checkout', {}, userId, {
+  const payload = {
+    items: [{ productId: productId.toString(), quantity: quantity }],
+    totalAmount: 100 // dummy amount
+  };
+  const checkoutRes = post('/checkout', payload, userId, {
     'Idempotency-Key': idempotencyKey
   });
 
