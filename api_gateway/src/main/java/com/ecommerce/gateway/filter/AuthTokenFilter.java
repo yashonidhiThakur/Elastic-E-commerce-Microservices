@@ -31,7 +31,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (path.startsWith("/cart") || path.startsWith("/payment")) {
+        if (path.startsWith("/cart") || path.startsWith("/payment") || path.startsWith("/checkout") || path.startsWith("/orders") || path.startsWith("/api/orders")) {
             String token = request.getHeader("token");
             if (token == null || token.isEmpty()) {
                 sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Missing token");

@@ -19,29 +19,7 @@ public class BaseEvent<T> {
     private String userId;
     private T payload;
 
-    public BaseEvent() {}
 
-    public BaseEvent(String eventId, String eventType, String occurredAt, String orderId, String userId, T payload) {
-        this.eventId = eventId;
-        this.eventType = eventType;
-        this.occurredAt = occurredAt;
-        this.orderId = orderId;
-        this.userId = userId;
-        this.payload = payload;
-    }
-
-    public String getEventId() { return eventId; }
-    public void setEventId(String eventId) { this.eventId = eventId; }
-    public String getEventType() { return eventType; }
-    public void setEventType(String eventType) { this.eventType = eventType; }
-    public String getOccurredAt() { return occurredAt; }
-    public void setOccurredAt(String occurredAt) { this.occurredAt = occurredAt; }
-    public String getOrderId() { return orderId; }
-    public void setOrderId(String orderId) { this.orderId = orderId; }
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
-    public T getPayload() { return payload; }
-    public void setPayload(T payload) { this.payload = payload; }
 
     public static <T> BaseEvent<T> create(String eventType, String orderId, String userId, T payload) {
         return new BaseEvent<>(

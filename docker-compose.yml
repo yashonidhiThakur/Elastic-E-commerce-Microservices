@@ -29,8 +29,8 @@ services:
 
   api-gateway:
     build:
-      context: .
-      dockerfile: api_gateway/Dockerfile
+      context: ./api_gateway
+      dockerfile: Dockerfile
     ports:
       - "5001:8000"
     environment:
@@ -47,13 +47,15 @@ services:
       - order-service
   inventory-service:
     build:
-      context: .
-      dockerfile: inventory_service/Dockerfile
+      context: ./inventory_service
+      dockerfile: Dockerfile
     ports:
       - "8002:8002"
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - SAGA_ENABLED=true
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
     volumes:
       - ./inventory_service:/app/inventory_service
     depends_on:
@@ -63,8 +65,8 @@ services:
 
   auth-service:
     build:
-      context: .
-      dockerfile: auth_service/Dockerfile
+      context: ./auth_service
+      dockerfile: Dockerfile
     ports:
       - "8003:8003"
     environment:
@@ -74,8 +76,8 @@ services:
 
   cart-service:
     build:
-      context: .
-      dockerfile: cart_service/Dockerfile
+      context: ./cart_service
+      dockerfile: Dockerfile
     ports:
       - "8004:8004"
     environment:
@@ -84,15 +86,17 @@ services:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
       - SAGA_ENABLED=true
     depends_on:
-      - redis
-      - inventory-service
+      redis:
+        condition: service_started
+      inventory-service:
+        condition: service_started
       kafka:
         condition: service_healthy
 
   payment-service:
     build:
-      context: .
-      dockerfile: payment_service/Dockerfile
+      context: ./payment_service
+      dockerfile: Dockerfile
     ports:
       - "8005:8005"
     environment:
@@ -125,8 +129,8 @@ services:
 
   order-service:
     build:
-      context: .
-      dockerfile: order_service/Dockerfile
+      context: ./order_service
+      dockerfile: Dockerfile
     ports:
       - "8001:8001"
     environment:
